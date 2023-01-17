@@ -15,9 +15,8 @@ app.use(express.json())
 
 //connect with mondodb
 
-const { MongoClient, ServerApiVersion, ConnectionClosedEvent } = require("mongodb");
 const uri =
-  "mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster-nerd-academy.c2dutjx.mongodb.net/?retryWrites=true&w=majority";
+  `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster-nerd-academy.c2dutjx.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -28,7 +27,15 @@ console.log(uri)
 
 async function run() {
   try {
+
     const courses = client.db('NERD-ACADEMY').collection('courses');
+
+    app.get('/courses', async (req, res) => {
+      const query = {};
+      const result = await courses.find(query).toArray();
+      res.send(result);
+    })
+    
   }
   finally {
 
