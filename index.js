@@ -29,10 +29,17 @@ async function run() {
   try {
 
     const courses = client.db('NERD-ACADEMY').collection('courses');
+    const faq = client.db('NERD-ACADEMY').collection('faq');
 
     app.get('/courses', async (req, res) => {
       const query = {};
       const result = await courses.find(query).toArray();
+      res.send(result);
+    })
+
+    app.get('/faq', async (req, res) => {
+      const query = {};
+      const result = await faq.find(query).toArray();
       res.send(result);
     })
     
