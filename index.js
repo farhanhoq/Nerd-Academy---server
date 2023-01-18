@@ -30,6 +30,8 @@ async function run() {
 
     const courses = client.db('NERD-ACADEMY').collection('courses');
     const faq = client.db('NERD-ACADEMY').collection('faq');
+    const overview = client.db('NERD-ACADEMY').collection('overview');
+    const cDetails = client.db('NERD-ACADEMY').collection('course-details');
 
     app.get('/courses', async (req, res) => {
       const query = {};
@@ -40,6 +42,18 @@ async function run() {
     app.get('/faq', async (req, res) => {
       const query = {};
       const result = await faq.find(query).toArray();
+      res.send(result);
+    })
+
+    app.get('/overview', async (req, res) => {
+      const query = {};
+      const result = await overview.find(query).toArray();
+      res.send(result);
+    })
+
+    app.get('/cDetails', async (req, res) => {
+      const query = {};
+      const result = await cDetails.find(query).toArray();
       res.send(result);
     })
     
