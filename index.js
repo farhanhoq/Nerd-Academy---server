@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require('jsonwebtoken');
 const dotenv = require("dotenv");
 require("dotenv").config();
@@ -31,12 +31,18 @@ async function run() {
     const courses = client.db('NERD-ACADEMY').collection('courses');
     const faq = client.db('NERD-ACADEMY').collection('faq');
     const overview = client.db('NERD-ACADEMY').collection('overview');
-    const cDetails = client.db('NERD-ACADEMY').collection('course-details');
 
     app.get('/courses', async (req, res) => {
       const query = {};
       const result = await courses.find(query).toArray();
       res.send(result);
+    })
+
+    app.get('/courses/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await courses.find(query).toArray();
+      res.send(result)
     })
 
     app.get('/faq', async (req, res) => {
@@ -51,11 +57,7 @@ async function run() {
       res.send(result);
     })
 
-    app.get('/cDetails', async (req, res) => {
-      const query = {};
-      const result = await cDetails.find(query).toArray();
-      res.send(result);
-    })
+    
     
   }
   finally {
