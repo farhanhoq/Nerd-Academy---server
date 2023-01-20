@@ -31,6 +31,7 @@ async function run() {
     const courses = client.db('NERD-ACADEMY').collection('courses');
     const faq = client.db('NERD-ACADEMY').collection('faq');
     const overview = client.db('NERD-ACADEMY').collection('overview');
+    const userscart = client.db("NERD-ACADEMY").collection('userscart');
 
     app.get('/courses', async (req, res) => {
       const query = {};
@@ -57,7 +58,11 @@ async function run() {
       res.send(result);
     })
 
-    
+    app.post('/userscart', async (req, res) => {
+      const coursecart = req.body
+      const result = await userscart.insertOne(coursecart)
+      res.send(result)
+    })
     
   }
   finally {
