@@ -27,10 +27,18 @@ console.log(uri)
 
 async function run() {
   try {
-
+    const usersCollection = client.db('NERD-ACADEMY').collection("users");
     const courses = client.db('NERD-ACADEMY').collection('courses');
     const faq = client.db('NERD-ACADEMY').collection('faq');
     const overview = client.db('NERD-ACADEMY').collection('overview');
+
+    //save users info in db
+    app.post('/users', async (req, res) => {
+      const user = req.body;
+      const result = await usersCollection.insertOne(user);
+      res.send(result);
+    });
+
 
     
     app.get('/courses', async (req, res) => {
@@ -58,8 +66,8 @@ async function run() {
       res.send(result);
     })
 
-    
-    
+
+
   }
   finally {
 
@@ -72,6 +80,6 @@ app.get('/', async (req, res) => {
   res.send('Nerd Academy Server Is Running')
 })
 
-app.listen(port , () => {
+app.listen(port, () => {
   console.log(`Nerd Academy Server Is Running On ${port}`);
 })
