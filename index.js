@@ -32,6 +32,7 @@ async function run() {
     const faq = client.db('NERD-ACADEMY').collection('faq');
     const overview = client.db('NERD-ACADEMY').collection('overview');
 
+    
     app.get('/courses', async (req, res) => {
       const query = {};
       const result = await courses.find(query).toArray();
