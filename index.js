@@ -71,6 +71,36 @@ async function run() {
       res.send(cartdata);
     });
 
+    // category wise data load start
+
+    app.get("/webdevdata", async (req, res) => {
+      const query = { category: "Web Development" };
+      const result = await courses.find(query).toArray();
+      res.send(result);
+    });
+    app.get("/computerscience", async (req, res) => {
+      const query = { category: "Computer Science" };
+      const result = await courses.find(query).toArray();
+      res.send(result);
+    });
+    app.get("/mobileappdev", async (req, res) => {
+      const query = { category: "Mobile App Development" };
+      const result = await courses.find(query).toArray();
+      res.send(result);
+    });
+    app.get("/artificialintelligence", async (req, res) => {
+      const query = { category: "Artificial Intelligence" };
+      const result = await courses.find(query).toArray();
+      res.send(result);
+    });
+    app.get("/programming", async (req, res) => {
+      const query = { category: "Programming" };
+      const result = await courses.find(query).toArray();
+      res.send(result);
+    });
+
+    // category wise data load end
+
     app.post("/userscart", async (req, res) => {
       const coursecart = req.body;
       const result = await userscart.insertOne(coursecart);
