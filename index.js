@@ -35,6 +35,7 @@ async function run() {
     const courseContent = client.db("NERD-ACADEMY").collection("courseContent");
     const studentAlsoBought = client.db("NERD-ACADEMY").collection("studentAlsoBought");
     const review = client.db("NERD-ACADEMY").collection("review");
+    const studentPurchasedCourses = client.db("NERD-ACADEMY").collection("student-purchased-courses");
 
     //save users info in db
     app.post("/users", async (req, res) => {
@@ -135,6 +136,18 @@ async function run() {
     });
 
     // category wise data load end
+
+    // student dashboard data load start from here
+
+    app.get("/perchased-courses", async (req, res) => {
+      const query = {};
+      const result = await studentPurchasedCourses.find(query).toArray();
+      res.send(result);
+    });
+
+
+
+
 
     app.post("/userscart", async (req, res) => {
       const coursecart = req.body;
