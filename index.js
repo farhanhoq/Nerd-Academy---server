@@ -53,6 +53,32 @@ async function run() {
       res.send(result);
     });
 
+    app.post("/courses", async (req, res) => {
+      const course = req.body;
+      const upload = await courses.insertOne(course);
+      res.send(upload);
+    });
+
+    // get my course
+    app.get('/my-courses', async (req, res) => {
+      const email = req.query.email;
+      const query = {
+        email: email
+      };
+      const result = await courses.find(query).toArray();
+      res.send(result);
+    });
+
+    // delete product
+    app.delete('/deleteCourse/:id', async (req, res) => {
+      const deleteId = req.params.id;
+      const query = {
+        _id: ObjectId(deleteId)
+      }
+      const result = await courses.deleteOne(query);
+      res.send(result);
+    });
+
     app.get("/counter", async (req, res) => {
       const query = {};
       const result = await counter.find(query).toArray();
@@ -78,7 +104,7 @@ async function run() {
       res.send(result);
     });
 
-    app.get('/review' , async (req , res) => {
+    app.get('/review', async (req, res) => {
       const query = {};
       const result = await review.find(query).toArray();
       res.send(result);
