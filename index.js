@@ -39,6 +39,7 @@ async function run() {
     const FAQ = client.db("NERD-ACADEMY").collection("FAQ");
     const studentPurchasedCourses = client.db("NERD-ACADEMY").collection("student-purchased-courses");
     const studentOrderHistory = client.db("NERD-ACADEMY").collection("student-order-history");
+    const studentAssignment = client.db("NERD-ACADEMY").collection("student-assignment");
 
     //save users info in db
     app.post("/users", async (req, res) => {
@@ -185,6 +186,15 @@ async function run() {
       const result = await studentOrderHistory.find(query).toArray();
       res.send(result);
     });
+
+    app.get("/student-assignment", async (req, res) => {
+      const query = {};
+      const result = await studentAssignment.find(query).toArray();
+      res.send(result);
+    });
+
+
+
 
 
 
