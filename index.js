@@ -41,7 +41,7 @@ async function run() {
     const FAQ = client.db("NERD-ACADEMY").collection("FAQ");
     const studentPurchasedCourses = client.db("NERD-ACADEMY").collection("student-purchased-courses");
     const studentOrderHistory = client.db("NERD-ACADEMY").collection("student-order-history");
-    const studentAssignment = client.db("NERD-ACADEMY").collection("student-assignment");
+    const profileCollection = client.db("NERD-ACADEMY").collection("profile");
 
     //save users info in db
     app.post("/users", async (req, res) => {
@@ -146,7 +146,6 @@ async function run() {
     });
 
     // category wise data load start
-
     app.get("/webdevdata", async (req, res) => {
       const query = { category: "Web Development" };
       const result = await courses.find(query).toArray();
@@ -197,28 +196,28 @@ async function run() {
 
 
 
-// Stripe API starts from here
+    // Stripe API starts from here
 
-app.post('/create-payment-intent', async (req, res) => {
-  const payment = req.body;
-  const price = payment.total;
-  
-  const amount = price * 100;
-  console.log(amount);
+    app.post('/create-payment-intent', async (req, res) => {
+      const payment = req.body;
+      const price = payment.total;
 
-  const paymentIntent = await stripe.paymentIntents.create({
-    currency: 'usd',
-    amount: amount,
-    "payment_method_types": [
-      "card"
-    ]
-  });
-  res.send({
-    clientSecret: paymentIntent.client_secret,
-  });
-})
+      const amount = price * 100;
+      console.log(amount);
 
-// Stripe API end
+      const paymentIntent = await stripe.paymentIntents.create({
+        currency: 'usd',
+        amount: amount,
+        "payment_method_types": [
+          "card"
+        ]
+      });
+      res.send({
+        clientSecret: paymentIntent.client_secret,
+      });
+    })
+
+    // Stripe API end
 
 
 
@@ -228,6 +227,38 @@ app.post('/create-payment-intent', async (req, res) => {
       const result = await userscart.insertOne(coursecart);
       res.send(result);
     });
+
+    // Update Profile GET API
+    app.get('/profile', async (req, res) => {
+      const query = {};
+      const users = await profileCollection.find(query).toArray();
+      res.send(users);
+    });
+
+    // Update Profile POST API
+    app.post('/profile', async (req, res) => {
+      const user = req.body;
+      const result = await profileCollection.insertOne(user);
+      res.send(result);
+    });
+
+    // Update Profile 
+    // app.put('/users/:id', async (req, res) => {
+    //   const id = req.params.id;
+    //   const filter = { _id: ObjectId(id) };
+    //   const user = req.body;
+    //   const option = { upsert: true };
+    //   const updatedprofile = {
+    //     $set: {
+    //       name: user.name,
+    //       email: user.email,
+
+    //     }
+    //   }
+    //   const result = await usersCollection.updateOne(filter, updatedprofile, option)
+    //   res.send(result)
+    // })
+
 
     app.delete("/usercartdata/:id", async (req, res) => {
       const id = req.params.id;
