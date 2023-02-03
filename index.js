@@ -4,6 +4,8 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 require("dotenv").config();
+const stripe = require("stripe")(process.env.STRIPE_SECRET_key);
+
 
 const port = process.env.PORT || 5000;
 const app = express();
@@ -195,7 +197,28 @@ async function run() {
 
 
 
+// Stripe API starts from here
 
+app.post('/create-payment-intent', async (req, res) => {
+  const payment = req.body;
+  const price = payment.total;
+  
+  const amount = price * 100;
+  console.log(amount);
+
+  const paymentIntent = await stripe.paymentIntents.create({
+    currency: 'usd',
+    amount: amount,
+    "payment_method_types": [
+      "card"
+    ]
+  });
+  res.send({
+    clientSecret: paymentIntent.client_secret,
+  });
+})
+
+// Stripe API end
 
 
 
