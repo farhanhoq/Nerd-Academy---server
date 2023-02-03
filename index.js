@@ -183,6 +183,12 @@ async function run() {
       res.send(result);
     });
 
+    app.post('/perchased-course', async (req, res) => {
+      const data = req.body;
+      const upload = await studentPurchasedCourses.insertOne(data);
+      res.send(upload);
+    })
+
     app.get("/order-history", async (req, res) => {
       const query = {};
       const result = await studentOrderHistory.find(query).toArray();
