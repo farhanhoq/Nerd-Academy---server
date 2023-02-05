@@ -246,6 +246,14 @@ async function run() {
       const user = await usersCollection.findOne(query);
       res.send({ isStudent: user?.role === 'student'});
     })
+
+    app.get('/users/role/:email', async (req, res) => {
+      const email = req.params.email;
+      console.log(email);api 
+      const query = { email: email };
+      const user = await usersCollection.findOne(query);
+      res.send(user);
+    })
     // Checking roles API end here
 
 
