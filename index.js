@@ -242,22 +242,7 @@ async function run() {
       res.send(result);
     });
 
-    // Update Profile 
-    // app.put('/users/:id', async (req, res) => {
-    //   const id = req.params.id;
-    //   const filter = { _id: ObjectId(id) };
-    //   const user = req.body;
-    //   const option = { upsert: true };
-    //   const updatedprofile = {
-    //     $set: {
-    //       name: user.name,
-    //       email: user.email,
 
-    //     }
-    //   }
-    //   const result = await usersCollection.updateOne(filter, updatedprofile, option)
-    //   res.send(result)
-    // })
 
 
     app.delete("/usercartdata/:id", async (req, res) => {
