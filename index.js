@@ -249,6 +249,37 @@ async function run() {
 
     // Stripe API end
 
+    // Checking roles API start from here
+    app.get('users/admin/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const user = await usersCollection.findOne(query);
+      res.send({ isAdmin: user?.role === 'admin'});
+    })
+
+    app.get('users/teacher/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const user = await usersCollection.findOne(query);
+      res.send({ isTeacher: user?.role === 'teacher'});
+    })
+
+    app.get('users/student/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const user = await usersCollection.findOne(query);
+      res.send({ isStudent: user?.role === 'student'});
+    })
+
+    app.get('/users/role/:email', async (req, res) => {
+      const email = req.params.email;
+      console.log(email);
+      const query = { email: email };
+      const user = await usersCollection.findOne(query);
+      res.send(user);
+    })
+    // Checking roles API end here
+
 
 
 
