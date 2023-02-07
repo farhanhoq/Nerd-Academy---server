@@ -42,6 +42,7 @@ async function run() {
     const studentPurchasedCourses = client.db("NERD-ACADEMY").collection("student-purchased-courses");
     const studentOrderHistory = client.db("NERD-ACADEMY").collection("student-order-history");
     const profileCollection = client.db("NERD-ACADEMY").collection("profile");
+    const checkoutData = client.db("NERD-ACADEMY").collection("checkout-data");
 
     //save users info in db
     app.post("/users", async (req, res) => {
@@ -188,9 +189,10 @@ async function run() {
       res.send(upload);
     })
 
-    app.get("/order-history", async (req, res) => {
-      const query = {};
-      const result = await studentOrderHistory.find(query).toArray();
+    app.get("/student-order-history/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { userEmail: email };
+      const result = await checkoutData.find(query).toArray();
       res.send(result);
     });
 
@@ -256,6 +258,20 @@ async function run() {
     })
     // Checking roles API end here
 
+    // checkout data API start
+
+    app.post('/checkout-data', async (req, res) => {
+      const checkout = req.body;
+      const result = await checkoutData.insertOne(checkout);
+      res.send(result);
+    });
+
+    app.get('/checkout-data/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { instructorEmail: email };
+      const data = await checkoutData.find(query).toArray();
+      res.send(data);
+    });
 
 
 
