@@ -4,7 +4,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 require("dotenv").config();
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const stripe = require("stripe")('sk_test_51M7InvAbbSTlGyeu2fTEmh96AQ3g07u7FU7rs2tuafcvtKrGf3UfNt4UQCBTFYSUPsFJFQWgxw5ki3HJGVPWMRmi00Oe7sO83Z');
 
 
 const port = process.env.PORT || 5000;
