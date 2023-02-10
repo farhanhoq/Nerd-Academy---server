@@ -50,6 +50,8 @@ async function run() {
       res.send(result);
     });
 
+
+
     app.get("/courses", async (req, res) => {
       const query = {};
       const result = await courses.find(query).toArray();
@@ -58,8 +60,26 @@ async function run() {
 
     app.post("/courses", async (req, res) => {
       const course = req.body;
+      course.publish = false;
       const upload = await courses.insertOne(course);
       res.send(upload);
+    });
+
+    // make verify Teacher >>>>>>>
+
+    app.put('/courses/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      // const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+
+          publish
+            : true
+        }
+      }
+      const result = await courses.updateOne(filter, updateDoc);
+      res.send(result)
     });
 
     // get my course
@@ -241,6 +261,7 @@ async function run() {
       const result = await profileCollection.insertOne(user);
       res.send(result);
     });
+
 
 
 
