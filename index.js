@@ -30,6 +30,7 @@ async function run() {
   try {
     const usersCollection = client.db("NERD-ACADEMY").collection("users");
     const courses = client.db("NERD-ACADEMY").collection("courses");
+    const wishlists = client.db("NERD-ACADEMY").collection("wishlists");
     const faq = client.db("NERD-ACADEMY").collection("faq");
     const overview = client.db("NERD-ACADEMY").collection("overview");
     const userscart = client.db("NERD-ACADEMY").collection("userscart");
@@ -97,13 +98,42 @@ async function run() {
       res.send(result);
     });
 
-    // delete product
+    // delete course
     app.delete('/deleteCourse/:id', async (req, res) => {
       const deleteId = req.params.id;
       const query = {
         _id: ObjectId(deleteId)
       }
       const result = await courses.deleteOne(query);
+      res.send(result);
+    });
+
+    app.get('/wishlist', async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const wishlist = await wishlists.find(query).toArray();
+      res.send(wishlist);
+    });
+
+    app.post('/wishlist', async (req, res) => {
+      const wishlist = req.body;
+      const query = {
+        course: wishlist.course,
+        email: wishlist.email
+      };
+      const alreadyAdded = await wishlists.find(query).toArray();
+      if (alreadyAdded.length) {
+        const message = `You already have adeed this`;
+        return res.send({ acknowledged: false, message });
+      }
+      const result = await wishlists.insertOne(wishlist);
+      res.send(result);
+    });
+
+    app.delete('/wishlist/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await wishlists.deleteOne(query);
       res.send(result);
     });
 
@@ -305,6 +335,13 @@ async function run() {
       res.send(result);
     });
 
+    app.delete("/usercartdata/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await userscart.deleteOne(query);
+      res.send(result);
+    });
+
     // Update Profile GET API
     app.get('/profile', async (req, res) => {
       const query = {};
@@ -337,12 +374,7 @@ async function run() {
     // })
 
 
-    app.delete("/usercartdata/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: ObjectId(id) };
-      const result = await userscart.deleteOne(query);
-      res.send(result);
-    });
+    
   } finally {
   }
 }
