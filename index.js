@@ -124,6 +124,15 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/pending", async (req, res) => {
+      console.log(req);
+      const query = {
+
+      }
+      const result = await courses.find(query).toArray();
+      res.send(result);
+    })
+
     // delete product
     app.delete("/deleteCourse/:id", async (req, res) => {
       const deleteId = req.params.id;
