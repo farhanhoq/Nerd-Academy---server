@@ -4,7 +4,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 require("dotenv").config();
-const stripe = require("stripe")(process.env.STRIPE_SECRET_key);
+const stripe = require("stripe")('sk_test_51M7InvAbbSTlGyeu2fTEmh96AQ3g07u7FU7rs2tuafcvtKrGf3UfNt4UQCBTFYSUPsFJFQWgxw5ki3HJGVPWMRmi00Oe7sO83Z');
 
 
 const port = process.env.PORT || 5000;
@@ -30,6 +30,7 @@ async function run() {
   try {
     const usersCollection = client.db("NERD-ACADEMY").collection("users");
     const courses = client.db("NERD-ACADEMY").collection("courses");
+    const wishlists = client.db("NERD-ACADEMY").collection("wishlists");
     const faq = client.db("NERD-ACADEMY").collection("faq");
     const overview = client.db("NERD-ACADEMY").collection("overview");
     const userscart = client.db("NERD-ACADEMY").collection("userscart");
@@ -42,6 +43,7 @@ async function run() {
     const studentPurchasedCourses = client.db("NERD-ACADEMY").collection("student-purchased-courses");
     const studentOrderHistory = client.db("NERD-ACADEMY").collection("student-order-history");
     const profileCollection = client.db("NERD-ACADEMY").collection("profile");
+    const checkoutData = client.db("NERD-ACADEMY").collection("checkout-data");
 
     //save users info in db
     app.post("/users", async (req, res) => {
@@ -49,8 +51,6 @@ async function run() {
       const result = await usersCollection.insertOne(user);
       res.send(result);
     });
-
-
 
     app.get("/courses", async (req, res) => {
       const query = {};
@@ -92,13 +92,42 @@ async function run() {
       res.send(result);
     });
 
-    // delete product
+    // delete course
     app.delete('/deleteCourse/:id', async (req, res) => {
       const deleteId = req.params.id;
       const query = {
         _id: ObjectId(deleteId)
       }
       const result = await courses.deleteOne(query);
+      res.send(result);
+    });
+
+    app.get('/wishlist', async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const wishlist = await wishlists.find(query).toArray();
+      res.send(wishlist);
+    });
+
+    app.post('/wishlist', async (req, res) => {
+      const wishlist = req.body;
+      const query = {
+        course: wishlist.course,
+        email: wishlist.email
+      };
+      const alreadyAdded = await wishlists.find(query).toArray();
+      if (alreadyAdded.length) {
+        const message = `You already have adeed this`;
+        return res.send({ acknowledged: false, message });
+      }
+      const result = await wishlists.insertOne(wishlist);
+      res.send(result);
+    });
+
+    app.delete('/wishlist/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await wishlists.deleteOne(query);
       res.send(result);
     });
 
@@ -202,9 +231,16 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/order-history", async (req, res) => {
-      const query = {};
-      const result = await studentOrderHistory.find(query).toArray();
+    app.post('/perchased-course', async (req, res) => {
+      const data = req.body;
+      const upload = await studentPurchasedCourses.insertOne(data);
+      res.send(upload);
+    })
+
+    app.get("/student-order-history/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { userEmail: email };
+      const result = await checkoutData.find(query).toArray();
       res.send(result);
     });
 
@@ -223,7 +259,7 @@ async function run() {
       const price = payment.total;
 
       const amount = price * 100;
-      console.log(amount);
+      // console.log(amount);
 
       const paymentIntent = await stripe.paymentIntents.create({
         currency: 'usd',
@@ -239,12 +275,64 @@ async function run() {
 
     // Stripe API end
 
+    // Checking roles API start from here
+    // app.get('users/admin/:email', async (req, res) => {
+    //   const email = req.params.email;
+    //   const query = { email };
+    //   const user = await usersCollection.findOne(query);
+    //   res.send({ isAdmin: user?.role === 'admin'});
+    // })
+
+    // app.get('users/teacher/:email', async (req, res) => {
+    //   const email = req.params.email;
+    //   const query = { email };
+    //   const user = await usersCollection.findOne(query);
+    //   res.send({ isTeacher: user?.role === 'teacher'});
+    // })
+
+    // app.get('users/student/:email', async (req, res) => {
+    //   const email = req.params.email;
+    //   const query = { email };
+    //   const user = await usersCollection.findOne(query);
+    //   res.send({ isStudent: user?.role === 'student'});
+    // })
+
+    app.get('/users/role/:email', async (req, res) => {
+      const email = req.params.email;
+      console.log(email);
+      const query = { email: email };
+      const user = await usersCollection.findOne(query);
+      res.send(user);
+    })
+    // Checking roles API end here
+
+    // checkout data API start
+
+    app.post('/checkout-data', async (req, res) => {
+      const checkout = req.body;
+      const result = await checkoutData.insertOne(checkout);
+      res.send(result);
+    });
+
+    app.get('/checkout-data/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { instructorEmail: email };
+      const data = await checkoutData.find(query).toArray();
+      res.send(data);
+    });
 
 
 
     app.post("/userscart", async (req, res) => {
       const coursecart = req.body;
       const result = await userscart.insertOne(coursecart);
+      res.send(result);
+    });
+
+    app.delete("/usercartdata/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await userscart.deleteOne(query);
       res.send(result);
     });
 
@@ -266,12 +354,6 @@ async function run() {
 
 
 
-    app.delete("/usercartdata/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: ObjectId(id) };
-      const result = await userscart.deleteOne(query);
-      res.send(result);
-    });
   } finally {
   }
 }
