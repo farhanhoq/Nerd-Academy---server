@@ -214,6 +214,13 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/users/role/:email", async (req, res) => {
+      const email = req.params.email;
+      console.log(email);
+      const query = { email: email };
+      const user = await usersCollection.findOne(query);
+      res.send(user);
+    });
 
 
     // Stripe API starts from here
