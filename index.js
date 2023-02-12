@@ -39,7 +39,7 @@ async function run() {
     const studentAlsoBought = client
       .db("NERD-ACADEMY")
       .collection("studentAlsoBought");
-    const review = client.db("NERD-ACADEMY").collection("review");
+    const reviewCollection = client.db("NERD-ACADEMY").collection("review");
     const counter = client.db("NERD-ACADEMY").collection("counter");
     const FAQ = client.db("NERD-ACADEMY").collection("FAQ");
     const studentPurchasedCourses = client
@@ -197,9 +197,15 @@ async function run() {
       res.send(result);
     });
 
+    app.post("/review", async (req, res) => {
+      const review = req.body;
+      const result = await reviewCollection.insertOne(review);
+      res.send(result);
+    });
+
     app.get("/review", async (req, res) => {
       const query = {};
-      const result = await review.find(query).toArray();
+      const result = await reviewCollection.find(query).toArray();
       res.send(result);
     });
 
