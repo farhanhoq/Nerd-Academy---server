@@ -343,6 +343,14 @@ async function run() {
       const result = await userscart.deleteOne(query);
       res.send(result);
     });
+
+    app.delete("/usercart/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const result = await userscart.deleteMany(query);
+      res.send(result);
+    });
+
   } finally {
   }
 }
