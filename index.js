@@ -30,17 +30,24 @@ async function run() {
   try {
     const usersCollection = client.db("NERD-ACADEMY").collection("users");
     const courses = client.db("NERD-ACADEMY").collection("courses");
+    const wishlists = client.db("NERD-ACADEMY").collection("wishlists");
     const faq = client.db("NERD-ACADEMY").collection("faq");
     const overview = client.db("NERD-ACADEMY").collection("overview");
     const userscart = client.db("NERD-ACADEMY").collection("userscart");
     const blogdetails = client.db("NERD-ACADEMY").collection("blogdetails");
     const courseContent = client.db("NERD-ACADEMY").collection("courseContent");
-    const studentAlsoBought = client.db("NERD-ACADEMY").collection("studentAlsoBought");
+    const studentAlsoBought = client
+      .db("NERD-ACADEMY")
+      .collection("studentAlsoBought");
     const review = client.db("NERD-ACADEMY").collection("review");
     const counter = client.db("NERD-ACADEMY").collection("counter");
     const FAQ = client.db("NERD-ACADEMY").collection("FAQ");
-    const studentPurchasedCourses = client.db("NERD-ACADEMY").collection("student-purchased-courses");
-    const studentOrderHistory = client.db("NERD-ACADEMY").collection("student-order-history");
+    const studentPurchasedCourses = client
+      .db("NERD-ACADEMY")
+      .collection("student-purchased-courses");
+    const studentOrderHistory = client
+      .db("NERD-ACADEMY")
+      .collection("student-order-history");
     const profileCollection = client.db("NERD-ACADEMY").collection("profile");
     const checkoutData = client.db("NERD-ACADEMY").collection("checkout-data");
 
@@ -52,15 +59,15 @@ async function run() {
     });
 
     // Get User  By Email
-    app.get('/users', async (req, res) => {
+    app.get("/users", async (req, res) => {
       const email = req.query.email;
-      const query = { email: email }
+      const query = { email: email };
       const result = await usersCollection.findOne(query);
       res.send(result);
     });
 
-    // Update User 
-    app.put('/users/:id', async (req, res) => {
+    // Update User
+    app.put("/users/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: ObjectId(id) };
       const body = req.body;
@@ -68,12 +75,16 @@ async function run() {
       const options = { upsert: true };
       const updateDoc = {
         $set: {
-          body
+          body,
         },
       };
-      const result = await usersCollection.updateOne(filter, updateDoc, options);
+      const result = await usersCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
       res.send(result);
-    })
+    });
 
     app.get("/courses", async (req, res) => {
       const query = {};
@@ -83,27 +94,81 @@ async function run() {
 
     app.post("/courses", async (req, res) => {
       const course = req.body;
+      course.publish = false;
       const upload = await courses.insertOne(course);
       res.send(upload);
     });
 
+    // make verify Teacher >>>>>>>
+
+    app.put("/courses/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      // const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          publish: true,
+        },
+      };
+      const result = await courses.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
     // get my course
-    app.get('/my-courses', async (req, res) => {
+    app.get("/my-courses", async (req, res) => {
       const email = req.query.email;
       const query = {
-        email: email
+        email: email,
       };
       const result = await courses.find(query).toArray();
       res.send(result);
     });
 
+    app.get("/pending", async (req, res) => {
+      console.log(req);
+      const query = {
+
+      }
+      const result = await courses.find(query).toArray();
+      res.send(result);
+    })
+
     // delete product
-    app.delete('/deleteCourse/:id', async (req, res) => {
+    app.delete("/deleteCourse/:id", async (req, res) => {
       const deleteId = req.params.id;
       const query = {
-        _id: ObjectId(deleteId)
-      }
+        _id: ObjectId(deleteId),
+      };
       const result = await courses.deleteOne(query);
+      res.send(result);
+    });
+
+    app.get('/wishlist', async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const wishlist = await wishlists.find(query).toArray();
+      res.send(wishlist);
+    });
+
+    app.post('/wishlist', async (req, res) => {
+      const wishlist = req.body;
+      const query = {
+        course: wishlist.course,
+        email: wishlist.email
+      };
+      const alreadyAdded = await wishlists.find(query).toArray();
+      if (alreadyAdded.length) {
+        const message = `You already have adeed this`;
+        return res.send({ acknowledged: false, message });
+      }
+      const result = await wishlists.insertOne(wishlist);
+      res.send(result);
+    });
+
+    app.delete('/wishlist/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await wishlists.deleteOne(query);
       res.send(result);
     });
 
@@ -132,11 +197,11 @@ async function run() {
       res.send(result);
     });
 
-    app.get('/review', async (req, res) => {
+    app.get("/review", async (req, res) => {
       const query = {};
       const result = await review.find(query).toArray();
       res.send(result);
-    })
+    });
 
     app.get("/blog", async (req, res) => {
       const query = {};
@@ -226,11 +291,17 @@ async function run() {
       res.send(result);
     });
 
-
+    app.get("/users/role/:email", async (req, res) => {
+      const email = req.params.email;
+      console.log(email);
+      const query = { email: email };
+      const user = await usersCollection.findOne(query);
+      res.send(user);
+    });
 
     // Stripe API starts from here
 
-    app.post('/create-payment-intent', async (req, res) => {
+    app.post("/create-payment-intent", async (req, res) => {
       const payment = req.body;
       const price = payment.total;
 
@@ -238,66 +309,16 @@ async function run() {
       // console.log(amount);
 
       const paymentIntent = await stripe.paymentIntents.create({
-        currency: 'usd',
+        currency: "usd",
         amount: amount,
-        "payment_method_types": [
-          "card"
-        ]
+        payment_method_types: ["card"],
       });
       res.send({
         clientSecret: paymentIntent.client_secret,
       });
-    })
+    });
 
     // Stripe API end
-
-    // Checking roles API start from here
-    // app.get('users/admin/:email', async (req, res) => {
-    //   const email = req.params.email;
-    //   const query = { email };
-    //   const user = await usersCollection.findOne(query);
-    //   res.send({ isAdmin: user?.role === 'admin'});
-    // })
-
-    // app.get('users/teacher/:email', async (req, res) => {
-    //   const email = req.params.email;
-    //   const query = { email };
-    //   const user = await usersCollection.findOne(query);
-    //   res.send({ isTeacher: user?.role === 'teacher'});
-    // })
-
-    // app.get('users/student/:email', async (req, res) => {
-    //   const email = req.params.email;
-    //   const query = { email };
-    //   const user = await usersCollection.findOne(query);
-    //   res.send({ isStudent: user?.role === 'student'});
-    // })
-
-    app.get('/users/role/:email', async (req, res) => {
-      const email = req.params.email;
-      console.log(email);
-      const query = { email: email };
-      const user = await usersCollection.findOne(query);
-      res.send(user);
-    })
-    // Checking roles API end here
-
-    // checkout data API start
-
-    app.post('/checkout-data', async (req, res) => {
-      const checkout = req.body;
-      const result = await checkoutData.insertOne(checkout);
-      res.send(result);
-    });
-
-    app.get('/checkout-data/:email', async (req, res) => {
-      const email = req.params.email;
-      const query = { instructorEmail: email };
-      const data = await checkoutData.find(query).toArray();
-      res.send(data);
-    });
-
-
 
     app.post("/userscart", async (req, res) => {
       const coursecart = req.body;
@@ -305,37 +326,26 @@ async function run() {
       res.send(result);
     });
 
+    app.delete("/usercartdata/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await userscart.deleteOne(query);
+      res.send(result);
+    });
+
     // Update Profile GET API
-    app.get('/profile', async (req, res) => {
+    app.get("/profile", async (req, res) => {
       const query = {};
       const users = await profileCollection.find(query).toArray();
       res.send(users);
     });
 
     // Update Profile POST API
-    app.post('/profile', async (req, res) => {
+    app.post("/profile", async (req, res) => {
       const user = req.body;
       const result = await profileCollection.insertOne(user);
       res.send(result);
     });
-
-    // Update Profile 
-    // app.put('/users/:id', async (req, res) => {
-    //   const id = req.params.id;
-    //   const filter = { _id: ObjectId(id) };
-    //   const user = req.body;
-    //   const option = { upsert: true };
-    //   const updatedprofile = {
-    //     $set: {
-    //       name: user.name,
-    //       email: user.email,
-
-    //     }
-    //   }
-    //   const result = await usersCollection.updateOne(filter, updatedprofile, option)
-    //   res.send(result)
-    // })
-
 
     app.delete("/usercartdata/:id", async (req, res) => {
       const id = req.params.id;
