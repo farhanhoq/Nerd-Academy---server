@@ -191,15 +191,37 @@ async function run() {
       res.send(result);
     });
 
+    //post review
     app.post("/review", async (req, res) => {
       const review = req.body;
       const result = await reviewCollection.insertOne(review);
       res.send(result);
     });
 
+    // app.get("/review", async (req, res) => {
+    //   const query = {};
+    //   const result = await reviewCollection.find(query).toArray();
+    //   res.send(result);
+    // });
+
+    //course details page show review for specific course and specific instructor mail
     app.get("/review", async (req, res) => {
-      const query = {};
+      const email = req.query.email;
+      const courseId = req.query.courseId;
+      const query = { instructorMail: email, courseId: courseId };
+      // console.log(query);
       const result = await reviewCollection.find(query).toArray();
+      console.log(result);
+      res.send(result);
+    });
+
+    //dashboard review for specific instructor
+    app.get("/das-review", async (req, res) => {
+      const email = req.query.email;
+      const query = { instructorMail: email };
+      // console.log(query);
+      const result = await reviewCollection.find(query).toArray();
+      // console.log(result);
       res.send(result);
     });
 
