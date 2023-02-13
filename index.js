@@ -36,18 +36,12 @@ async function run() {
     const userscart = client.db("NERD-ACADEMY").collection("userscart");
     const blogdetails = client.db("NERD-ACADEMY").collection("blogdetails");
     const courseContent = client.db("NERD-ACADEMY").collection("courseContent");
-    const studentAlsoBought = client
-      .db("NERD-ACADEMY")
-      .collection("studentAlsoBought");
+    const studentAlsoBought = client.db("NERD-ACADEMY").collection("studentAlsoBought");
     const review = client.db("NERD-ACADEMY").collection("review");
     const counter = client.db("NERD-ACADEMY").collection("counter");
     const FAQ = client.db("NERD-ACADEMY").collection("FAQ");
-    const studentPurchasedCourses = client
-      .db("NERD-ACADEMY")
-      .collection("student-purchased-courses");
-    const studentOrderHistory = client
-      .db("NERD-ACADEMY")
-      .collection("student-order-history");
+    const studentPurchasedCourses = client.db("NERD-ACADEMY").collection("student-purchased-courses");
+    const studentOrderHistory = client.db("NERD-ACADEMY").collection("student-order-history");
     const profileCollection = client.db("NERD-ACADEMY").collection("profile");
     const checkoutData = client.db("NERD-ACADEMY").collection("checkout-data");
 
@@ -266,17 +260,24 @@ async function run() {
 
     // student dashboard data load start from here
 
-    app.get("/perchased-courses", async (req, res) => {
-      const query = {};
-      const result = await studentPurchasedCourses.find(query).toArray();
-      res.send(result);
-    });
+    // app.get("/perchased-courses", async (req, res) => {
+    //   const query = {};
+    //   const result = await studentPurchasedCourses.find(query).toArray();
+    //   res.send(result);
+    // });
 
     app.post('/perchased-course', async (req, res) => {
       const data = req.body;
       const upload = await studentPurchasedCourses.insertOne(data);
       res.send(upload);
     })
+
+    app.get("/perchased-courses/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { buyerEmail: email };
+      const result = await studentPurchasedCourses.find(query).toArray();
+      res.send(result);
+    });
 
     app.get("/student-order-history/:email", async (req, res) => {
       const email = req.params.email;
