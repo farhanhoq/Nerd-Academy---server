@@ -212,7 +212,7 @@ async function run() {
       const query = { instructorMail: email, courseId: courseId };
       // console.log(query);
       const result = await reviewCollection.find(query).toArray();
-      console.log(result);
+      // console.log(result);
       res.send(result);
     });
 
@@ -222,7 +222,7 @@ async function run() {
       const query = { instructorMail: email };
       // console.log(query);
       const result = await reviewCollection.find(query).toArray();
-      // console.log(result);
+      console.log(result);
       res.send(result);
     });
 
