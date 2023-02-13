@@ -37,7 +37,7 @@ async function run() {
     const blogdetails = client.db("NERD-ACADEMY").collection("blogdetails");
     const courseContent = client.db("NERD-ACADEMY").collection("courseContent");
     const studentAlsoBought = client.db("NERD-ACADEMY").collection("studentAlsoBought");
-    const review = client.db("NERD-ACADEMY").collection("review");
+    const reviewCollection = client.db("NERD-ACADEMY").collection("review");
     const counter = client.db("NERD-ACADEMY").collection("counter");
     const FAQ = client.db("NERD-ACADEMY").collection("FAQ");
     const studentPurchasedCourses = client.db("NERD-ACADEMY").collection("student-purchased-courses");
