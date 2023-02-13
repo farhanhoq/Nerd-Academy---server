@@ -44,6 +44,7 @@ async function run() {
     const studentOrderHistory = client.db("NERD-ACADEMY").collection("student-order-history");
     const profileCollection = client.db("NERD-ACADEMY").collection("profile");
     const checkoutData = client.db("NERD-ACADEMY").collection("checkout-data");
+    const feedbacks = client.db("NERD-ACADEMY").collection("feedbacks");
 
     //save users info in db
     app.post("/users", async (req, res) => {
@@ -286,13 +287,17 @@ async function run() {
 
     // category wise data load end
 
-    // student dashboard data load start from here
+    // Feedback API start from here
 
-    // app.get("/perchased-courses", async (req, res) => {
-    //   const query = {};
-    //   const result = await studentPurchasedCourses.find(query).toArray();
-    //   res.send(result);
-    // });
+    app.post('/student-feedback', async (req, res) => {
+      const data = req.body;
+      const upload = await feedbacks.insertOne(data);
+      res.send(upload);
+    })
+
+    // Feedback API end here
+
+    // student dashboard data load start from here
 
     app.post('/perchased-course', async (req, res) => {
       const data = req.body;
@@ -327,6 +332,8 @@ async function run() {
       const user = await usersCollection.findOne(query);
       res.send(user);
     });
+
+    // student dashboard data load end here
 
     // Stripe API starts from here
 
