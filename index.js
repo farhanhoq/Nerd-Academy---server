@@ -119,10 +119,20 @@ async function run() {
       res.send(result);
     });
 
+    // Publish show publish:
+    app.get("/publish", async (req, res) => {
+      const email = req.query.email;
+      const query = {
+        email: email,
+      };
+      const result = await courses.find(query).toArray();
+      res.send(result);
+    });
+
+
     app.get("/pending", async (req, res) => {
       console.log(req);
       const query = {
-
       }
       const result = await courses.find(query).toArray();
       res.send(result);
