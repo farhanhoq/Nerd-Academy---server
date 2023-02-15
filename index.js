@@ -64,6 +64,12 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/all-users", async (req, res) => {
+      const query = {};
+      const result = await usersCollection.find(query).toArray();
+      res.send(result);
+    });
+
     // Update User
     app.put("/users/:id", async (req, res) => {
       const id = req.params.id;
@@ -82,6 +88,16 @@ async function run() {
         options
       );
       res.send(result);
+    });
+
+    // delete users
+    app.delete('/del-users/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = {
+        _id: ObjectId(id)
+      }
+      const result = await usersCollection.deleteOne(query);
+      res.send(result)
     });
 
     app.get("/courses", async (req, res) => {
@@ -345,6 +361,7 @@ async function run() {
       const user = await usersCollection.findOne(query);
       res.send(user);
     });
+
 
     // student dashboard data load end here
 
