@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require("jsonwebtoken");
+// const bodyParser = require('body-parser');
 const dotenv = require("dotenv");
 require("dotenv").config();
 const stripe = require("stripe")('sk_test_51M7InvAbbSTlGyeu2fTEmh96AQ3g07u7FU7rs2tuafcvtKrGf3UfNt4UQCBTFYSUPsFJFQWgxw5ki3HJGVPWMRmi00Oe7sO83Z');
@@ -45,6 +46,7 @@ async function run() {
     const profileCollection = client.db("NERD-ACADEMY").collection("profile");
     const checkoutData = client.db("NERD-ACADEMY").collection("checkout-data");
     const feedbacks = client.db("NERD-ACADEMY").collection("feedbacks");
+    const menuItemsDynamic = client.db("NERD-ACADEMY").collection("menuItems");
 
     //save users info in db
     app.post("/users", async (req, res) => {
@@ -236,6 +238,7 @@ async function run() {
       res.send(result);
     });
 
+
     app.get("/blog", async (req, res) => {
       const query = {};
       const result = await blogdetails.find(query).toArray();
@@ -406,6 +409,21 @@ async function run() {
       const result = await userscart.deleteMany(query);
       res.send(result);
     });
+
+
+    //menu items
+    app.post("/api/menu-items", async (req, res) => {
+      const pages = req.body;
+      const result = await menuItemsDynamic.insertOne(pages);
+      res.send(result);
+    });
+
+    app.get("/api/menu-items", async (req, res) => {
+      const query = {};
+      const result = await menuItemsDynamic.find(query).toArray();
+      res.send(result);
+    });
+
 
   } finally {
   }
