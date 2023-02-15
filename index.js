@@ -47,6 +47,7 @@ async function run() {
     const checkoutData = client.db("NERD-ACADEMY").collection("checkout-data");
     const feedbacks = client.db("NERD-ACADEMY").collection("feedbacks");
     const menuItemsDynamic = client.db("NERD-ACADEMY").collection("menuItems");
+    const teachersReview = client.db("NERD-ACADEMY").collection("teacher-review");
 
     //save users info in db
     app.post("/users", async (req, res) => {
@@ -211,13 +212,12 @@ async function run() {
       res.send(result);
     });
 
-    // app.get("/review", async (req, res) => {
-    //   const query = {};
-    //   const result = await reviewCollection.find(query).toArray();
-    //   res.send(result);
-    // });
+    app.post("/teachers-review", async (req, res) => {
+      const review = req.body;
+      const result = await teachersReview.insertOne(review);
+      res.send(result);
+    });
 
-    //course details page show review for specific course and specific instructor mail
     app.get("/review", async (req, res) => {
       const email = req.query.email;
       const courseId = req.query.courseId;
