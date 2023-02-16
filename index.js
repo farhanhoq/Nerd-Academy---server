@@ -369,6 +369,12 @@ async function run() {
 
     // student dashboard data load start from here
 
+    app.post("/checkout-data", async (req, res) => {
+      const data = req.body;
+      const upload = await checkoutData.insertOne(data);
+      res.send(upload);
+    });
+
     app.post('/perchased-course', async (req, res) => {
       const data = req.body;
       const upload = await studentPurchasedCourses.insertOne(data);
