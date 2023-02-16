@@ -187,26 +187,17 @@ async function run() {
       res.send(result);
     });
 
-    //
-    app.get("/studentsReviews/:id", async (req, res) => {
-      try {
-        const { id } = req.params;
 
-        const product = await reviewCollection.findOne({ _id: ObjectId(id) });
-
-        res.send({
-          success: true,
-          data: product,
-        });
-      } catch (error) {
-        res.send({
-          success: false,
-          error: error.message,
-        });
-      }
+    // delete Review created by Mamun
+    app.delete('/review/:id', async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const query = { _id: ObjectId(id) }
+      const result = await reviewCollection.deleteOne(query);
+      res.send(result)
     });
 
-
+    // --------------------------------------------------------------------------
     // delete product
     app.delete("/deleteCourse/:id", async (req, res) => {
       const deleteId = req.params.id;
