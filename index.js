@@ -304,6 +304,11 @@ async function run() {
       res.send(result);
     });
 
+    app.post("/blog", async (req, res) => {
+      const blogs = req.body;
+      const result = await blogdetails.insertOne(blogs);
+      res.send(result);
+    });
 
     app.get("/blog", async (req, res) => {
       const query = {};
