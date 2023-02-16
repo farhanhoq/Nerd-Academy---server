@@ -127,31 +127,22 @@ async function run() {
 
     // ------------Created By (Mamun) their below code>>>
 
-    // Update Review created by mamun:
-    app.patch("/review/:id", async (req, res) => {
-      const { id } = req.params;
-      console.log(id);
-
-      try {
-        const result = await reviewCollection.updateOne({ _id: ObjectId(id) }, { $set: req.body });
-
-        if (result.matchedCount) {
-          res.send({
-            success: true,
-            message: `successfully updated ${req.body.name}`,
-          });
-        } else {
-          res.send({
-            success: false,
-            error: "Couldn't update  the product",
-          });
+    // Update Review created by mamun & Neasher
+    app.put('/review/:id', async (req, res) => {
+      const id = req.params.id;
+      const review = req.body.review;
+      console.log(review);
+      const query = {
+        _id: ObjectId(id)
+      };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          review
         }
-      } catch (error) {
-        res.send({
-          success: false,
-          error: error.message,
-        });
-      }
+      };
+      const result = reviewCollection.updateOne(query, updatedDoc, options);
+      res.send(result);
     });
 
     // make verify Teacher created by mamun:
