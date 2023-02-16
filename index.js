@@ -384,6 +384,13 @@ async function run() {
       res.send(upload);
     })
 
+    app.get("/perchased-courses-teacher/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { instructorEmail: email };
+      const result = await studentPurchasedCourses.find(query).toArray();
+      res.send(result);
+    });
+
     app.get("/perchased-courses/:email", async (req, res) => {
       const email = req.params.email;
       const query = { buyerEmail: email };
