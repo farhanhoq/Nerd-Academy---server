@@ -390,7 +390,7 @@ async function run() {
     });
 
     app.get("/student-order-history", async (req, res) => {
-      const email = req.params.email;
+      const email = req.query.email;
       const query = { userEmail: email };
       const result = await checkoutData.find(query).toArray();
       res.send(result);
