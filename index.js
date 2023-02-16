@@ -276,10 +276,11 @@ async function run() {
     });
 
     app.get("/review", async (req, res) => {
-      const email = req.query.email;
+      // const email = req.query.email;
       const courseId = req.query.courseId;
-      const query = { instructorMail: email, courseId: courseId };
-      // console.log(query);
+      // const query = { instructorMail: email, courseId: courseId };
+      const query = { courseId: courseId };
+      console.log(query);
       const result = await reviewCollection.find(query).toArray();
       // console.log(result);
       res.send(result);
