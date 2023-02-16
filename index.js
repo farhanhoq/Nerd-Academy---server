@@ -398,6 +398,13 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/teacher-order-history/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { instructorEmail: email };
+      const result = await checkoutData.find(query).toArray();
+      res.send(result);
+    });
+
     app.get("/student-assignment", async (req, res) => {
       const query = {};
       const result = await studentAssignment.find(query).toArray();
