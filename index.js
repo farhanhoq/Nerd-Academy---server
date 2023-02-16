@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require("jsonwebtoken");
+// const bodyParser = require('body-parser');
 const dotenv = require("dotenv");
 require("dotenv").config();
 const stripe = require("stripe")('sk_test_51M7InvAbbSTlGyeu2fTEmh96AQ3g07u7FU7rs2tuafcvtKrGf3UfNt4UQCBTFYSUPsFJFQWgxw5ki3HJGVPWMRmi00Oe7sO83Z');
@@ -45,6 +46,8 @@ async function run() {
     const profileCollection = client.db("NERD-ACADEMY").collection("profile");
     const checkoutData = client.db("NERD-ACADEMY").collection("checkout-data");
     const feedbacks = client.db("NERD-ACADEMY").collection("feedbacks");
+    const menuItemsDynamic = client.db("NERD-ACADEMY").collection("menuItems");
+    const teachersReview = client.db("NERD-ACADEMY").collection("teacher-review");
 
     //save users info in db
     app.post("/users", async (req, res) => {
@@ -58,6 +61,12 @@ async function run() {
       const email = req.query.email;
       const query = { email: email };
       const result = await usersCollection.findOne(query);
+      res.send(result);
+    });
+
+    app.get("/all-users", async (req, res) => {
+      const query = {};
+      const result = await usersCollection.find(query).toArray();
       res.send(result);
     });
 
@@ -79,6 +88,16 @@ async function run() {
         options
       );
       res.send(result);
+    });
+
+    // delete users
+    app.delete('/del-users/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = {
+        _id: ObjectId(id)
+      }
+      const result = await usersCollection.deleteOne(query);
+      res.send(result)
     });
 
     app.get("/courses", async (req, res) => {
@@ -268,13 +287,12 @@ async function run() {
       res.send(result);
     });
 
-    // app.get("/review", async (req, res) => {
-    //   const query = {};
-    //   const result = await reviewCollection.find(query).toArray();
-    //   res.send(result);
-    // });
+    app.post("/teachers-review", async (req, res) => {
+      const review = req.body;
+      const result = await teachersReview.insertOne(review);
+      res.send(result);
+    });
 
-    //course details page show review for specific course and specific instructor mail
     app.get("/review", async (req, res) => {
       const email = req.query.email;
       const courseId = req.query.courseId;
@@ -294,6 +312,7 @@ async function run() {
       console.log(result);
       res.send(result);
     });
+
 
     app.get("/blog", async (req, res) => {
       const query = {};
@@ -402,6 +421,7 @@ async function run() {
       res.send(user);
     });
 
+
     // student dashboard data load end here
 
     // Stripe API starts from here
@@ -465,6 +485,21 @@ async function run() {
       const result = await userscart.deleteMany(query);
       res.send(result);
     });
+
+
+    //menu items
+    app.post("/api/menu-items", async (req, res) => {
+      const pages = req.body;
+      const result = await menuItemsDynamic.insertOne(pages);
+      res.send(result);
+    });
+
+    app.get("/api/menu-items", async (req, res) => {
+      const query = {};
+      const result = await menuItemsDynamic.find(query).toArray();
+      res.send(result);
+    });
+
 
   } finally {
   }
