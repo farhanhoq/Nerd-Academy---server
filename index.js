@@ -94,8 +94,48 @@ async function run() {
       res.send(upload);
     });
 
-    // make verify Teacher >>>>>>>
 
+    // get my course
+    app.get("/my-courses", async (req, res) => {
+      const email = req.query.email;
+      const query = {
+        email: email,
+      };
+      const result = await courses.find(query).toArray();
+      res.send(result);
+    });
+
+
+    // ------------Created By (Mamun) their below code>>>
+
+    // Update Review created by mamun:
+    app.patch("/review/:id", async (req, res) => {
+      const { id } = req.params;
+      console.log(id);
+
+      try {
+        const result = await reviewCollection.updateOne({ _id: ObjectId(id) }, { $set: req.body });
+
+        if (result.matchedCount) {
+          res.send({
+            success: true,
+            message: `successfully updated ${req.body.name}`,
+          });
+        } else {
+          res.send({
+            success: false,
+            error: "Couldn't update  the product",
+          });
+        }
+      } catch (error) {
+        res.send({
+          success: false,
+          error: error.message,
+        });
+      }
+    });
+
+    // make verify Teacher created by mamun:
     app.put("/courses/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: ObjectId(id) };
@@ -109,17 +149,8 @@ async function run() {
       res.send(result);
     });
 
-    // get my course
-    app.get("/my-courses", async (req, res) => {
-      const email = req.query.email;
-      const query = {
-        email: email,
-      };
-      const result = await courses.find(query).toArray();
-      res.send(result);
-    });
 
-    // Publish show publish:
+    // Publish show publish created by mamun:
     app.get("/publish", async (req, res) => {
       const email = req.query.email;
       const query = {
@@ -129,14 +160,42 @@ async function run() {
       res.send(result);
     });
 
-
+    // Pending Courses created by mamun
     app.get("/pending", async (req, res) => {
       console.log(req);
       const query = {
       }
       const result = await courses.find(query).toArray();
       res.send(result);
-    })
+    });
+
+    // Student (My reviews) created by mamun
+    app.get("/studentsReviews/", async (req, res) => {
+      const email = req.query.email;
+      const query = { userEmail: email };
+      const result = await reviewCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    //
+    app.get("/studentsReviews/:id", async (req, res) => {
+      try {
+        const { id } = req.params;
+
+        const product = await reviewCollection.findOne({ _id: ObjectId(id) });
+
+        res.send({
+          success: true,
+          data: product,
+        });
+      } catch (error) {
+        res.send({
+          success: false,
+          error: error.message,
+        });
+      }
+    });
+
 
     // delete product
     app.delete("/deleteCourse/:id", async (req, res) => {
