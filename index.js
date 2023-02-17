@@ -276,10 +276,11 @@ async function run() {
     });
 
     app.get("/review", async (req, res) => {
-      const email = req.query.email;
+      // const email = req.query.email;
       const courseId = req.query.courseId;
-      const query = { instructorMail: email, courseId: courseId };
-      // console.log(query);
+      // const query = { instructorMail: email, courseId: courseId };
+      const query = { courseId: courseId };
+      console.log(query);
       const result = await reviewCollection.find(query).toArray();
       // console.log(result);
       res.send(result);
@@ -295,6 +296,11 @@ async function run() {
       res.send(result);
     });
 
+    app.post("/blog", async (req, res) => {
+      const blogs = req.body;
+      const result = await blogdetails.insertOne(blogs);
+      res.send(result);
+    });
 
     app.get("/blog", async (req, res) => {
       const query = {};
@@ -403,7 +409,7 @@ async function run() {
     });
 
     app.get("/teacher-order-history", async (req, res) => {
-      const email = req.params.email;
+      const email = req.query.email;
       const query = { instructorEmail: email };
       const result = await checkoutData.find(query).toArray();
       res.send(result);
