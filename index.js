@@ -276,6 +276,7 @@ async function run() {
     });
 
     app.get("/review", async (req, res) => {
+
       // const email = req.query.email;
       const courseId = req.query.courseId;
       // const query = { instructorMail: email, courseId: courseId };
@@ -385,6 +386,12 @@ async function run() {
       const data = req.body;
       const upload = await studentPurchasedCourses.insertOne(data);
       res.send(upload);
+    })
+
+    app.get('/perchased-course', async (req, res) => {
+      const query = {};
+      const result = await studentPurchasedCourses.find(query).toArray();
+      res.send(result);
     })
 
     app.get("/perchased-courses-teacher", async (req, res) => {
