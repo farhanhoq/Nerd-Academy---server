@@ -382,17 +382,18 @@ async function run() {
       res.send(upload);
     });
 
+    app.get('/perchased-course', async (req, res) => {
+      const query = {};
+      const result = await checkoutData.find(query).toArray();
+      res.send(result);
+    })
+
     app.post('/perchased-course', async (req, res) => {
       const data = req.body;
       const upload = await studentPurchasedCourses.insertOne(data);
       res.send(upload);
     })
 
-    app.get('/perchased-course', async (req, res) => {
-      const query = {};
-      const result = await studentPurchasedCourses.find(query).toArray();
-      res.send(result);
-    })
 
     app.get("/perchased-courses-teacher", async (req, res) => {
       const email = req.query.email;
