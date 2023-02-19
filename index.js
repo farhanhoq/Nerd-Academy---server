@@ -402,6 +402,15 @@ async function run() {
       res.send(result);
     });
 
+    app.delete('/del-perchased-courses-student/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = {
+        _id: ObjectId(id)
+      }
+      const result = await studentPurchasedCourses.deleteOne(query);
+      res.send(result)
+    });
+
     app.get("/perchased-courses/:email", async (req, res) => {
       const email = req.params.email;
       const query = { buyerEmail: email };
