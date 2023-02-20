@@ -89,6 +89,57 @@ async function run() {
       res.send(result);
     });
 
+    app.put("/users", async (req, res) => {
+      const email = req.query.email;
+      const filter = { enail: email };
+      const body = req.body;
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          body,
+        },
+      };
+      const result = await usersCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
+      res.send(result);
+    });
+
+    app.put("/users-pending-increase", async (req, res) => {
+      const email = req.query.email;
+      console.log(email)
+      const filter = { email: email };
+      const updateDoc = {
+        $inc: {
+          pending : +1
+        },
+      };
+      const result = await usersCollection.updateOne(
+        filter,
+        updateDoc
+      );
+      res.send(result);
+    });
+
+    app.put("/users-publish-increase", async (req, res) => {
+      const email = req.query.email;
+      console.log(email)
+      const filter = { email: email };
+      const updateDoc = {
+        $inc: {
+          pending : -1,
+          publish : +1
+        },
+      };
+      const result = await usersCollection.updateOne(
+        filter,
+        updateDoc
+      );
+      res.send(result);
+    });
+
     // delete users
     app.delete('/del-users/:id', async (req, res) => {
       const id = req.params.id;
