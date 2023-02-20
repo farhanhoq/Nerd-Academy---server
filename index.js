@@ -25,7 +25,6 @@ const client = new MongoClient(uri, {
   serverApi: ServerApiVersion.v1,
 });
 
-console.log(uri);
 
 async function run() {
   try {
@@ -176,6 +175,20 @@ async function run() {
       const query = {
       }
       const result = await courses.find(query).toArray();
+      res.send(result);
+    });
+
+    app.put('/pending/:id', async (req, res) => {
+      const id = req.params.id;
+      const suggested = req.body.suggested.suggestion;
+      const query = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          suggested
+        }
+      };
+      const result = courses.updateOne(query, updatedDoc, options);
       res.send(result);
     });
 
