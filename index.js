@@ -254,6 +254,21 @@ async function run() {
       res.send(result);
     });
 
+    app.put("/edit-pending-course/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const body = req.body;
+      console.log(body);
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          body
+        },
+      };
+      const result = await usersCollection.updateOne( filter, updateDoc, options );
+      res.send(result);
+    });
+
     app.put('/pending/:id', async (req, res) => {
       const id = req.params.id;
       const suggested = req.body.suggested.suggestion;
