@@ -107,6 +107,23 @@ async function run() {
       res.send(result);
     });
 
+    app.put("/users-purchase-spend", async (req, res) => {
+      const email = req.query.email;
+      const price = req.body.price;
+      const filter = { email: email };
+      const updateDoc = {
+        $inc: {
+          purchased: +1,
+          spend: +price
+        },
+      };
+      const result = await usersCollection.updateOne(
+        filter,
+        updateDoc
+      );
+      res.send(result);
+    });
+
     app.put("/users-pending-increase", async (req, res) => {
       const email = req.query.email;
       console.log(email)
@@ -142,7 +159,7 @@ async function run() {
 
     app.put("/users-income", async (req, res) => {
       const email = req.query.email;
-      const price = req.body.price
+      const price = req.body.price;
       console.log(email, price)
       const filter = { email: email };
       const updateDoc = {
