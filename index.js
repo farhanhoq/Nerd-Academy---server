@@ -140,6 +140,23 @@ async function run() {
       res.send(result);
     });
 
+    app.put("/users-income", async (req, res) => {
+      const email = req.query.email;
+      const price = req.body.price
+      console.log(email, price)
+      const filter = { email: email };
+      const updateDoc = {
+        $inc: {
+          income : +price
+        },
+      };
+      const result = await usersCollection.updateOne(
+        filter,
+        updateDoc
+      );
+      res.send(result);
+    });
+
     // delete users
     app.delete('/del-users/:id', async (req, res) => {
       const id = req.params.id;
