@@ -229,6 +229,13 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/edit-pending-course/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await courses.findOne(query);
+      res.send(result);
+    });
+
     app.put('/pending/:id', async (req, res) => {
       const id = req.params.id;
       const suggested = req.body.suggested.suggestion;
