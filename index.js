@@ -204,6 +204,18 @@ async function run() {
       res.send(upload);
     });
 
+    app.put("/course-bought", async (req, res) => {
+      const id = req.params.email;
+      const filter = { _id: ObjectId(id) };
+      const updateDoc = {
+        $inc: {
+          bought: +1,
+        },
+      };
+      const result = await courses.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
 
     // get my course
     app.get("/my-courses", async (req, res) => {
