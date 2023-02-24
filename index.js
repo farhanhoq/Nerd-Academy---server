@@ -205,7 +205,7 @@ async function run() {
     });
 
     app.put("/course-bought/:id", async (req, res) => {
-      const id = req.params.email;
+      const id = req.params.id;
       const filter = { _id: ObjectId(id) };
       const updateDoc = {
         $inc: {
