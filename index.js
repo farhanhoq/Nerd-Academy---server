@@ -204,7 +204,7 @@ async function run() {
       res.send(upload);
     });
 
-    app.put("/course-bought", async (req, res) => {
+    app.put("/course-bought/:id", async (req, res) => {
       const id = req.params.email;
       const filter = { _id: ObjectId(id) };
       const updateDoc = {
