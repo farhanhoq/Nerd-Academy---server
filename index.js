@@ -198,7 +198,7 @@ async function run() {
     });
 
     app.get("/courses-also-bought", async (req, res) => {
-      const title = req.params.title;
+      const title = req.query.title;
       const query = {title: title};
       const result = await courses.find(query).toArray();
       res.send(result);
