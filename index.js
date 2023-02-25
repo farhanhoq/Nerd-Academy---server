@@ -198,8 +198,8 @@ async function run() {
     });
 
     app.get("/courses-also-bought", async (req, res) => {
-      const title = req.query.title;
-      const query = {title: title};
+      const category = req.query.category;
+      const query = {category: category};
       const result = await courses.find(query).toArray();
       res.send(result);
     });
