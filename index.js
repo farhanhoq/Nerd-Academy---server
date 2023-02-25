@@ -196,6 +196,24 @@ async function run() {
       res.send(result);
     });
 
+
+    app.put("/teacher-course-qty", async (req, res) => {
+      const email = req.query.email;
+      const filter = { email: email };
+      const updateDoc = {
+        $inc: {
+          course_qty : +1
+        },
+      };
+      const result = await usersCollection.updateOne(
+        filter,
+        updateDoc
+      );
+      res.send(result);
+    });
+
+
+
     // delete users
     app.delete('/del-users/:id', async (req, res) => {
       const id = req.params.id;
