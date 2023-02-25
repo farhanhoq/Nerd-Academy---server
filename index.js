@@ -197,6 +197,13 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/courses-also-bought", async (req, res) => {
+      const title = req.params.title;
+      const query = {title: title};
+      const result = await courses.find(query).toArray();
+      res.send(result);
+    });
+
     app.post("/courses", async (req, res) => {
       const course = req.body;
       course.publish = false;
@@ -206,10 +213,11 @@ async function run() {
 
     app.put("/course-bought/:id", async (req, res) => {
       const id = req.params.id;
+      console.log(req)
       const filter = { _id: ObjectId(id) };
       const updateDoc = {
         $inc: {
-          bought: +1,
+          bought: +1
         },
       };
       const result = await courses.updateOne(filter, updateDoc);
