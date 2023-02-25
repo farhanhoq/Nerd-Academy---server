@@ -423,6 +423,13 @@ async function run() {
       res.send(result);
     });
 
+    app.get('/teachers-review', async (req, res) => {
+      const email = req.query.email;
+      const query = { instructorMail: email };
+      const review = await wishlists.find(query).toArray();
+      res.send(review);
+    });
+
     app.get("/review", async (req, res) => {
 
       // const email = req.query.email;
