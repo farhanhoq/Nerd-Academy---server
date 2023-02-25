@@ -426,7 +426,7 @@ async function run() {
     app.get('/teachers-review', async (req, res) => {
       const email = req.query.email;
       const query = { instructorMail: email };
-      const review = await wishlists.find(query).toArray();
+      const review = await teachersReview.find(query).toArray();
       res.send(review);
     });
 
